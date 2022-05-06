@@ -17,6 +17,7 @@ scram b
 * Run: (use your favorite input sample)
 
 ```
+cd JpsiKKK/JpsiPhiKs/test/
 voms-proxy-init -rfc -voms cms -valid 192:00
-cmsRun JpsiKKK/JpsiPhiKs/test/run-jpsiphiks-miniaod.py (for B0 -> JpsiPhiKs reconstruction using UL MC samples)
+cmsRun run-jpsiphiks-miniaod.py yData=2018 (for B0 -> JpsiPhiKs reconstruction using 2018 UL samples)
 ```
