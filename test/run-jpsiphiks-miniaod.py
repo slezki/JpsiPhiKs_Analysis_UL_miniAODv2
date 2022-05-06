@@ -8,9 +8,21 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 vP = VarParsing.VarParsing('analysis')
 vP.register('nThr',4, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"threads")
 vP.register('nEvt',1000,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events")
+vP.register('yData',1000,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"data year")
 vP.parseArguments()
 
 maxEvnt = vP.nEvt
+inputs = []
+
+if vP.yData == '2018':
+    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2018D_Charmonium
+    inputs = UL2018D_Charmonium
+if vP.yData == '2017':
+    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2017E_Charmonium
+    inputs = UL2017E_Charmonium
+if vP.yData == '2016':
+    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2016G_Charmonium
+    inputs = UL2016G_Charmonium
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
@@ -23,9 +35,8 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(maxEvnt))
 
-from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2018D_Charmonium
 #"""
-process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring(UL2018D_Charmonium))
+process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring(inputs))
 #process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 
 process.TFileService = cms.Service("TFileService",fileName = cms.string(ouput_filename))
@@ -126,6 +137,9 @@ process.rootuple = cms.EDAnalyzer('OniaRecoTrackTrackRootupler',
                           dikaon_pdgid = cms.uint32(333),
                           kaon1_pdgid = cms.int32(321),
                           kaon2_pdgid = cms.int32(-321),
+                          dipion_pdgid = cms.uint32(310),
+                          pion1_pdgid = cms.int32(211),
+                          pion2_pdgid = cms.int32(-211),
                           isMC = cms.bool(False),
                           OnlyBest = cms.bool(False)
 )

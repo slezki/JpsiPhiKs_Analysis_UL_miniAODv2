@@ -43,7 +43,7 @@ class OniaRecoTrackTrackRootupler : public edm::EDAnalyzer {
   const double kaonTMass_;
   const double pionTMass_;
   const double DimuonMass_;
-  const int  candidate_pdgid_, onia_pdgid_, dikaon_pdgid_, kaon1_pdgid_, kaon2_pdgid_;
+  const int  candidate_pdgid_, onia_pdgid_, dikaon_pdgid_, kaon1_pdgid_, kaon2_pdgid_, dipion_pdgid_, pion1_pdgid_, pion2_pdgid_;
   const bool isMC_,OnlyBest_;
 
   UInt_t run, event, nCandPerEvent, numPrimaryVertices, trigger;
@@ -105,16 +105,21 @@ class OniaRecoTrackTrackRootupler : public edm::EDAnalyzer {
   Int_t          gen_candidate_pdgId;
   TLorentzVector gen_dimuon_p4;
   Int_t          gen_onia_pdgId;
+  TLorentzVector gen_muonp_p4;
+  TLorentzVector gen_muonn_p4;
   TLorentzVector gen_dikaon_p4;
   TLorentzVector gen_kaon1_p4;
   Int_t          gen_kaon1_pdgid;
   TLorentzVector gen_kaon2_p4;
   Int_t          gen_kaon2_pdgid;
-  TLorentzVector gen_muonp_p4;
-  TLorentzVector gen_muonn_p4;
+  TLorentzVector gen_dipion_p4;
+  TLorentzVector gen_pion1_p4;
+  Int_t          gen_pion1_pdgid;
+  TLorentzVector gen_pion2_p4;
+  Int_t          gen_pion2_pdgid;
 
-  TLorentzVector kaon1;
-  TLorentzVector kaon2;
+  //TLorentzVector kaon1;
+  //TLorentzVector kaon2;
 
   TLorentzVector ups_p4, muonP_p4, muonN_p4;
   Double_t ups_vMass, ups_vertexWeight, ups_vProb, ups_vChi2, ups_DCA, ups_ctauPV, ups_ctauErrPV, ups_cosAlpha;
@@ -144,11 +149,13 @@ onia_pdgid_(iConfig.getParameter<uint32_t>("onia_pdgid")),
 dikaon_pdgid_(iConfig.getParameter<uint32_t>("dikaon_pdgid")),
 kaon1_pdgid_(iConfig.getParameter<int32_t>("kaon1_pdgid")),
 kaon2_pdgid_(iConfig.getParameter<int32_t>("kaon2_pdgid")),
+dipion_pdgid_(iConfig.getParameter<uint32_t>("dipion_pdgid")),
+pion1_pdgid_(iConfig.getParameter<int32_t>("pion1_pdgid")),
+pion2_pdgid_(iConfig.getParameter<int32_t>("pion2_pdgid")),
 isMC_(iConfig.getParameter<bool>("isMC")),
 OnlyBest_(iConfig.getParameter<bool>("OnlyBest"))
 {
-        is_dimuon_ = (onia_pdgid_ == 333 || onia_pdgid_ == 443 || onia_pdgid_ == 100443 || onia_pdgid_ == 553 || onia_pdgid_ == 100553 || onia_pdgid_ == 200553);
-	edm::Service<TFileService> fs;
+	     edm::Service<TFileService> fs;
         TheTree = fs->make<TTree>("CandidateTree","CandidateTree");
 
         TheTree->Branch("run",                &run,                "run/I");
@@ -350,17 +357,22 @@ OnlyBest_(iConfig.getParameter<bool>("OnlyBest"))
 	if(isMC_)
 	  {
       TheTree->Branch("gen_candidate_pdgId", &gen_candidate_pdgId, "gen_candidate_pdgId/I");
-      TheTree->Branch("gen_onia_pdgId",      &gen_onia_pdgId,      "gen_onia_pdgId/I");
-	  TheTree->Branch("gen_candidate_p4","TLorentzVector", &gen_candidate_p4);
+      TheTree->Branch("gen_candidate_p4","TLorentzVector", &gen_candidate_p4);
+      TheTree->Branch("gen_candidate_charge",     &gen_candidate_charge,       "gen_candidate_charge/I");
       TheTree->Branch("gen_dimuon_p4",   "TLorentzVector", &gen_dimuon_p4);
+      TheTree->Branch("gen_onia_pdgId",      &gen_onia_pdgId,      "gen_onia_pdgId/I");
       if (dikaon_pdgid_) TheTree->Branch("gen_dikaon_p4",   "TLorentzVector", &gen_dikaon_p4);
 	    TheTree->Branch("gen_kaon1_p4",   "TLorentzVector", &gen_kaon1_p4);
       TheTree->Branch("gen_kaon1_pdgid", &gen_kaon1_pdgid, "gen_kaon1_pdgid/I");
       TheTree->Branch("gen_kaon2_p4",   "TLorentzVector", &gen_kaon2_p4);
       TheTree->Branch("gen_kaon2_pdgid", &gen_kaon2_pdgid, "gen_kaon2_pdgid/I");
+      if (dipion_pdgid_) TheTree->Branch("gen_dipion_p4",   "TLorentzVector", &gen_dipion_p4);
+      TheTree->Branch("gen_pion1_p4",   "TLorentzVector", &gen_pion1_p4);
+      TheTree->Branch("gen_pion1_pdgid", &gen_pion1_pdgid, "gen_pion1_pdgid/I");
+      TheTree->Branch("gen_pion2_p4",   "TLorentzVector", &gen_pion2_p4);
+      TheTree->Branch("gen_pion2_pdgid", &gen_pion2_pdgid, "gen_pion2_pdgid/I");
       TheTree->Branch("gen_muonp_p4",    "TLorentzVector", &gen_muonp_p4);
       TheTree->Branch("gen_muonn_p4",    "TLorentzVector", &gen_muonn_p4);
-      TheTree->Branch("gen_candidate_charge",     &gen_candidate_charge,       "gen_candidate_charge/I");
 	  }
 
         JpsiTree = fs->make<TTree>("JpsiTree","JpsiTree");
@@ -457,24 +469,20 @@ void OniaRecoTrackTrackRootupler::analyze(const edm::Event& iEvent, const edm::E
             const reco::Candidate* b = itParticle->daughter(i);
             int bpdgid = b->pdgId();
             if ( abs(bpdgid) == onia_pdgid_ && b->status() == 2 ) {
-              gen_onia_pdgId = bpdgid;
-              const reco::Candidate* d = nullptr;
-              d = b;
-              if (d) {
-                   gen_dimuon_p4.SetPtEtaPhiM(d->pt(),d->eta(),d->phi(),d->mass());
-                   foundit++;
-                   for (uint j = 0; j < d->numberOfDaughters(); ++j) {
-                     const reco::Candidate* p = d->daughter(j);
-                     if ( p->pdgId() == 13 && p->status() == 1 ) {
-                        gen_muonp_p4.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
-                        foundit++;
-                     }
-                     if ( p->pdgId() == -13 && p->status() == 1 ) {
-                        gen_muonn_p4.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
-                        foundit++;
-                     }
-                   }
-              } // d
+               gen_onia_pdgId = bpdgid;
+               gen_dimuon_p4.SetPtEtaPhiM(b->pt(),b->eta(),b->phi(),b->mass());
+               foundit++;
+               for (uint j = 0; j < b->numberOfDaughters(); ++j) {
+                  const reco::Candidate* p = b->daughter(j);
+                  if ( p->pdgId() == -13 && p->status() == 1 ) {
+                     gen_muonp_p4.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
+                     foundit++;
+                  }
+                  if ( p->pdgId() == 13 && p->status() == 1 ) {
+                     gen_muonn_p4.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
+                     foundit++;
+                  }
+               }
             }
             if (dikaon_pdgid_ && abs(bpdgid) == dikaon_pdgid_) {
               gen_dikaon_p4.SetPtEtaPhiM(b->pt(),b->eta(),b->phi(),b->mass());
@@ -515,8 +523,47 @@ void OniaRecoTrackTrackRootupler::analyze(const edm::Event& iEvent, const edm::E
                 foundit++;
               }
             }
+            if (dipion_pdgid_ && abs(bpdgid) == dipion_pdgid_) {
+              gen_dipion_p4.SetPtEtaPhiM(b->pt(),b->eta(),b->phi(),b->mass());
+              for (uint k = 0; k < b->numberOfDaughters(); ++k) {
+                const reco::Candidate* p = b->daughter(k);
+                if ( p->pdgId() == pion1_pdgid_ && p->status() == 1 ) {
+                   //std::cout<<" in dipion - pion 1 "<<std::endl;
+                   //pion1.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
+                   //gen_pion1_pdgid_ = pion1_pdgid_;
+                   gen_pion1_p4.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
+                   gen_pion1_pdgid = pion1_pdgid_;
+                   foundit++;
+                }
+                if ( p->pdgId() == pion2_pdgid_ && p->status() == 1 ) {
+                   //std::cout<<" in dipion - pion 2 "<<std::endl;
+                   //pion2.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
+                   //gen_pion2_pdgid_ = pion2_pdgid_;
+                   gen_pion2_p4.SetPtEtaPhiM(p->pt(),p->eta(),p->phi(),p->mass());
+                   gen_pion2_pdgid = pion2_pdgid_;
+                   foundit++;
+                }
+              }
+            } else {
+              if ( bpdgid == pion1_pdgid_ && b->status() == 1 ) {
+                //std::cout<<" pion 1 "<<std::endl;
+                //pion1.SetPtEtaPhiM(b->pt(),b->eta(),b->phi(),b->mass());
+                //gen_pion1_pdgid_ = pion1_pdgid_;
+                gen_pion1_p4.SetPtEtaPhiM(b->pt(),b->eta(),b->phi(),b->mass());
+                gen_pion1_pdgid = pion1_pdgid_;
+                foundit++;
+              }
+              if ( bpdgid == pion2_pdgid_ && b->status() == 1 ) {
+                //std::cout<<" pion 2 "<<std::endl;
+                //pion2.SetPtEtaPhiM(b->pt(),b->eta(),b->phi(),b->mass());
+                //gen_pion2_pdgid_ = pion2_pdgid_;
+                gen_pion2_p4.SetPtEtaPhiM(b->pt(),b->eta(),b->phi(),b->mass());
+                gen_pion2_pdgid = pion2_pdgid_;
+                foundit++;
+              }
+            }
           }
-          if ( foundit == 6 ) break;
+          if ( foundit == 8 ) break;
           else {
             foundit = 0;
             gen_candidate_pdgId = 0;
