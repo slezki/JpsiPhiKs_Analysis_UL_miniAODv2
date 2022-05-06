@@ -21,3 +21,16 @@ cd JpsiKKK/JpsiPhiKs/test/
 voms-proxy-init -rfc -voms cms -valid 192:00
 cmsRun run-jpsiphiks-miniaod.py yData=2018 (for B0 -> JpsiPhiKs reconstruction using 2018 UL samples)
 ```
+
+* To send multiple tasks in CRAB for Run II:
+
+```
+chmod +x crabCfgCreator.sh (just once)
+./crabCfgCreator.sh 
+```
+
+* Check status (or resubmit, report etc..) for CRAB tasks:
+
+```
+chmod +x crabTools.sh (just once)
+./crabTools.sh status workDir (workDir: see crabCfgCreator.sh file; status can be change with all CRAB commands which can be used after tasks have been sent.) 
