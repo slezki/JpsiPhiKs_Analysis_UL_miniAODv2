@@ -287,55 +287,29 @@ Onia2MuMuPAT::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     double mu2_pt, mu2_ptErr, mu2_d0, mu2_d0Err, mu2_dz, mu2_dzErr, mu2_dxy, mu2_dxyErr;
     int mu2_nvsh, mu2_nvph, mu2_charge;
 
-    //if (it->track()->pt() > it2->track()->pt()){
-      mu1_pt      = it->track()->pt();
-      mu1_ptErr   = it->track()->ptError();
-      mu1_d0      = it->track()->d0();
-      mu1_d0Err   = it->track()->d0Error();
-      mu1_dz      = it->track()->dz(thePrimaryV.position());
-      mu1_dzErr   = it->track()->dzError();
-      mu1_dxy     = it->track()->dxy(thePrimaryV.position());
-      mu1_dxyErr  = it->track()->dxyError();
-      mu1_nvsh    = it->track()->hitPattern().numberOfValidStripHits();
-      mu1_nvph    = it->track()->hitPattern().numberOfValidPixelHits();
-      mu1_charge  = it->track()->charge();
+    mu1_pt      = it->track()->pt();
+    mu1_ptErr   = it->track()->ptError();
+    mu1_d0      = it->track()->d0();
+    mu1_d0Err   = it->track()->d0Error();
+    mu1_dz      = it->track()->dz(thePrimaryV.position());
+    mu1_dzErr   = it->track()->dzError();
+    mu1_dxy     = it->track()->dxy(thePrimaryV.position());
+    mu1_dxyErr  = it->track()->dxyError();
+    mu1_nvsh    = it->track()->hitPattern().numberOfValidStripHits();
+    mu1_nvph    = it->track()->hitPattern().numberOfValidPixelHits();
+    mu1_charge  = it->track()->charge();
 
-      mu2_pt      = it2->track()->pt();
-      mu2_ptErr   = it2->track()->ptError();
-      mu2_d0      = it2->track()->d0();
-      mu2_d0Err   = it2->track()->d0Error();
-      mu2_dz      = it2->track()->dz(thePrimaryV.position());
-      mu2_dzErr   = it2->track()->dzError();
-      mu2_dxy     = it2->track()->dxy(thePrimaryV.position());
-      mu2_dxyErr  = it2->track()->dxyError();
-      mu2_nvsh    = it2->track()->hitPattern().numberOfValidStripHits();
-      mu2_nvph    = it2->track()->hitPattern().numberOfValidPixelHits();
-      mu2_charge  = it2->track()->charge();
-    /*} else {
-      mu1_pt      = it2->track()->pt();
-      mu1_ptErr   = it2->track()->ptError();
-      mu1_d0      = it2->track()->d0();
-      mu1_d0Err   = it2->track()->d0Error();
-      mu1_dz      = it2->track()->dz(thePrimaryV.position());
-      mu1_dzErr   = it2->track()->dzError();
-      mu1_dxy     = it2->track()->dxy(thePrimaryV.position());
-      mu1_dxyErr  = it2->track()->dxyError();
-      mu1_nvsh    = it2->track()->hitPattern().numberOfValidStripHits();
-      mu1_nvph    = it2->track()->hitPattern().numberOfValidPixelHits();
-      mu1_charge  = it2->track()->charge();
-
-      mu2_pt      = it->track()->pt();
-      mu2_ptErr   = it->track()->ptError();
-      mu2_d0      = it->track()->d0();
-      mu2_d0Err   = it->track()->d0Error();
-      mu2_dz      = it->track()->dz(thePrimaryV.position());
-      mu2_dzErr   = it->track()->dzError();
-      mu2_dxy     = it->track()->dxy(thePrimaryV.position());
-      mu2_dxyErr  = it->track()->dxyError();
-      mu2_nvsh    = it->track()->hitPattern().numberOfValidStripHits();
-      mu2_nvph    = it->track()->hitPattern().numberOfValidPixelHits();
-      mu2_charge  = it->track()->charge();
-    }*/
+    mu2_pt      = it2->track()->pt();
+    mu2_ptErr   = it2->track()->ptError();
+    mu2_d0      = it2->track()->d0();
+    mu2_d0Err   = it2->track()->d0Error();
+    mu2_dz      = it2->track()->dz(thePrimaryV.position());
+    mu2_dzErr   = it2->track()->dzError();
+    mu2_dxy     = it2->track()->dxy(thePrimaryV.position());
+    mu2_dxyErr  = it2->track()->dxyError();
+    mu2_nvsh    = it2->track()->hitPattern().numberOfValidStripHits();
+    mu2_nvph    = it2->track()->hitPattern().numberOfValidPixelHits();
+    mu2_charge  = it2->track()->charge();
 
     myCand.addUserFloat("mu1_pt",mu1_pt);
     myCand.addUserFloat("mu1_ptErr",mu1_ptErr);
@@ -499,7 +473,7 @@ Onia2MuMuPAT::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
       }
 
-
+      myCand.addUserInt("diMuIndex",nEvents);
       // ---- Push back output ----  
       oniaOutput->push_back(myCand);
       //intMuon++;
