@@ -1,7 +1,5 @@
-ouput_filename = 'rootuple_UL2018_JpsiPhiKs.root'
-
 import FWCore.ParameterSet.Config as cms
-process = cms.Process('JPsiKK')
+process = cms.Process('JpsiPhiKs')
 
 import FWCore.ParameterSet.VarParsing as VarParsing
 
@@ -13,15 +11,17 @@ vP.parseArguments()
 
 maxEvnt = vP.nEvt
 inputs = []
+year = vP.yData
+ouput_filename = 'rootuple_UL'+year+'_MiniAOD_JpsiPhiKs.root'
 
-if vP.yData == '2018':
-    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2018D_Charmonium
+if year == '2018':
+    from JpsiKKK.JpsiPhiK.run2_UL_miniAODv2_files import UL2018D_Charmonium
     inputs = UL2018D_Charmonium
-if vP.yData == '2017':
-    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2017E_Charmonium
+if year == '2017':
+    from JpsiKKK.JpsiPhiK.run2_UL_miniAODv2_files import UL2017E_Charmonium
     inputs = UL2017E_Charmonium
-if vP.yData == '2016':
-    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2016G_Charmonium
+if year == '2016':
+    from JpsiKKK.JpsiPhiK.run2_UL_miniAODv2_files import UL2016G_Charmonium
     inputs = UL2016G_Charmonium
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
@@ -114,7 +114,7 @@ process.rootuple = cms.EDAnalyzer('JpsiPhiKsRootupler',
                           kaonTMass = cms.double(0.493677),#kaons
                           pionTMass = cms.double(0.13957061),#pions
                           DimuonMass = cms.double(3.096916),#J/Psi
-                          candidate_pdgid = cms.uint32(521), #10443 for spin 0
+                          candidate_pdgid = cms.uint32(511), #10443 for spin 0
                           onia_pdgid = cms.uint32(443),#j/psi
                           dikaon_pdgid = cms.uint32(333),
                           kaon1_pdgid = cms.int32(321),
