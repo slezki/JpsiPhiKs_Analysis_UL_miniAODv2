@@ -103,6 +103,7 @@ class JpsiPhiKsRootupler : public edm::EDAnalyzer {
   Double_t pion2_SLamPhi, pion2_SLamDxy, pion2_SLamDsz, pion2_SPhiPhi, pion2_SPhiDxy, pion2_SPhiDsz;
   Double_t pion2_SDxyDxy, pion2_SDxyDsz, pion2_SDszDsz, pion2_minEigen;
 
+  Double_t jpsiphi_vMass, jpsiphi_vProb, jpsiphi_vChi2;
 
   TLorentzVector gen_candidate_p4;
   Int_t          gen_candidate_pdgId;
@@ -192,6 +193,10 @@ OnlyBest_(iConfig.getParameter<bool>("OnlyBest"))
         TheTree->Branch("dimuon_ctauErrBS",    &dimuon_ctauErrBS,    "dimuon_ctauErrBS/D");
         TheTree->Branch("dimuon_lxyBS",        &dimuon_lxyBS,          "dimuon_lxyBS/D");
         TheTree->Branch("dimuon_lxyErrBS",     &dimuon_lxyErrBS,       "dimuon_lxyErrBS/D");
+
+        TheTree->Branch("jpsiphi_vMass",      &jpsiphi_vMass,        "jpsiphi_vMass/D");
+        TheTree->Branch("jpsiphi_vProb",      &jpsiphi_vProb,        "jpsiphi_vProb/D");
+        TheTree->Branch("jpsiphi_vChi2",      &jpsiphi_vChi2,        "jpsiphi_vChi2/D");
 
         TheTree->Branch("candidate_vMass",      &candidate_vMass,        "candidate_vMass/D");
         TheTree->Branch("candidate_vProb",      &candidate_vProb,        "candidate_vProb/D");
@@ -625,6 +630,10 @@ void JpsiPhiKsRootupler::analyze(const edm::Event& iEvent, const edm::EventSetup
       candidate_lxyErr    = TheCandidate_.userFloat("lxyErr");
       candidate_lxyz      = TheCandidate_.userFloat("lxyz");
       candidate_lxyzErr   = TheCandidate_.userFloat("lxyzErr");
+
+      jpsiphi_vMass     = TheCandidate_.userFloat("vMassJpsiPhi");
+      jpsiphi_vProb     = TheCandidate_.userFloat("vProbJpsiPhi");
+      jpsiphi_vChi2     = TheCandidate_.userFloat("vChi2JpsiPhi");
 
       thePrimaryV_X = TheCandidate_.userFloat("thePrimaryV_X");
       thePrimaryV_Y = TheCandidate_.userFloat("thePrimaryV_Y");

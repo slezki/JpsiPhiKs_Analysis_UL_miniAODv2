@@ -19,8 +19,11 @@
 #include "DataFormats/Candidate/interface/VertexCompositePtrCandidate.h"
 
 #include "CommonTools/Utils/interface/PtComparator.h"
+#include "TMatrixDSym.h"
+#include "TVectorD.h"
 
 #include <vector>
+
 class JpsiPhiKsProducer : public edm::EDProducer {
 	
  public: 
@@ -43,16 +46,12 @@ class JpsiPhiKsProducer : public edm::EDProducer {
   const bool IsTheSame(const reco::Track& tk, const pat::Muon& mu);
 //  const pat::CompositeCandidate makeCandidate(const pat::CompositeCandidate& onia, const reco::Track& track1, const reco::Track& track2);
 //  const pat::CompositeCandidate FitVtx(const reco::Track &mu1, const reco::Track &mu2, RefCountedKinematicParticle thePhoton, const reco::Track &tk1, const reco::Track &tk2, const reco::Vertex &thePrimaryV, edm::ESHandle<TransientTrackBuilder> &theB);
-  const RefCountedKinematicParticle FitKshort(const reco::Track &tk0, const reco::Track &tk1, edm::ESHandle<TransientTrackBuilder> &theB);
+  const RefCountedKinematicParticle FitKshort(const reco::Track *tk0, const reco::Track *tk1, edm::ESHandle<TransientTrackBuilder> &theB);
+  //reco::Track fix_track(const reco::Track& tk);
+  reco::Track fix_track(const reco::Track *tk);
 
   int candidates;
   int nevents;
-  std::vector<reco::Track> kaons;
-  std::vector<reco::Track> pions;
-  std::vector<int> kaons_fromPV;
-  std::vector<int> refVtx;
-  std::vector<int> pvAssocQ;
-  std::vector<float> dzAssocPV;
 
   GreaterByPt<reco::Track> PtComparator;
 

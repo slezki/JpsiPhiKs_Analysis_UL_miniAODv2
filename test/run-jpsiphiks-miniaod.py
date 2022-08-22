@@ -6,7 +6,7 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 vP = VarParsing.VarParsing('analysis')
 vP.register('nThr',4, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"Num. of Threads")
 vP.register('nEvt',1000,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"Num. of Events")
-vP.register('yData','2018',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"data year")
+vP.register('yData','RunII',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"data year")
 vP.parseArguments()
 
 maxEvnt = vP.nEvt
@@ -15,13 +15,13 @@ year = vP.yData
 ouput_filename = 'rootuple_UL'+year+'_MiniAOD_JpsiPhiKs.root'
 
 if year == '2018':
-    from JpsiKKK.JpsiPhiK.run2_UL_miniAODv2_files import UL2018D_Charmonium
+    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2018D_Charmonium
     inputs = UL2018D_Charmonium
 if year == '2017':
-    from JpsiKKK.JpsiPhiK.run2_UL_miniAODv2_files import UL2017E_Charmonium
+    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2017E_Charmonium
     inputs = UL2017E_Charmonium
 if year == '2016':
-    from JpsiKKK.JpsiPhiK.run2_UL_miniAODv2_files import UL2016G_Charmonium
+    from JpsiKKK.JpsiPhiKs.run2_UL_miniAODv2_files import UL2016G_Charmonium
     inputs = UL2016G_Charmonium
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
@@ -29,7 +29,7 @@ process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '106X_dataRun2_v35', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '106X_dataRun2_v36', '')
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100

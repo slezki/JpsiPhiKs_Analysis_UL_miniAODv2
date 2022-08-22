@@ -95,7 +95,7 @@ jsonfile = [
 '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON_MuonPhys.txt'
 ]
 
-workDir = 'JpsiPhiKs_DataRunII_UltraLegacy_miniAODv2_v2'
+workDir = 'JpsiPhiKs_DataRunII_UltraLegacy_miniAODv2_v4'
 decay = decays[0]
 pset = psetS[0]
 runNum = runNumber[0]
@@ -138,7 +138,7 @@ config.Data.publication         = False
 #config.Data.ignoreLocality      = True
 
 config.section_('Site')
-config.Site.storageSite         = 'T2_CN_Beijing'
+config.Site.storageSite         = 'T2_CH_CERN'
 
 pyFile
 
